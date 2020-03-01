@@ -12,14 +12,23 @@ public class PlayerController : MonoBehaviour
 		public float walkSpeed;     //歩行速度
 		public float jumpForce;     //ジャンプ力
 
+		public enum Angle           //キャラ向き
+		{
+			Right,
+			Left,
+		}
+
+		public Angle angle;
+
 		public Rigidbody2D rigid2D; //プレイヤの物理
 
-		public Chara(float x, float y, float s, float jF, Rigidbody2D rigidbody2D)
+		public Chara(float x, float y, float s, float jF, Angle a, Rigidbody2D rigidbody2D)
 		{
 			cx = x;
 			cy = y;
 			walkSpeed = s;
 			jumpForce = jF;
+			angle = a;
 			this.rigid2D = rigidbody2D;
 		}
 	}
@@ -29,9 +38,8 @@ public class PlayerController : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		//X,Y,歩行速度,ジャンプ力,Rigidbody2Dを取得
-		this.player = new Chara(0, 0, 5.0f, 550.0f, GetComponent<Rigidbody2D>());
-
+		//X,Y,歩行速度,ジャンプ力,キャラ向き,Rigidbody2Dを取得
+		this.player = new Chara(0, 0, 5.0f, 550.0f, Chara.Angle.Right, GetComponent<Rigidbody2D>());
 	}
 
 	// Update is called once per frame
@@ -53,7 +61,6 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetAxis("Horizontal") <= 0.1f && Input.GetAxis("Horizontal") >= -0.1f)
 			{
 				this.player.cx = 0.0f;
-
 			}
 
 			//プレイヤジャンプ
@@ -63,15 +70,27 @@ public class PlayerController : MonoBehaviour
 			}  //↑値は同じ(はず？)↓
 			this.player.cy = this.player.rigid2D.velocity.y;
 
-
-			//移動
-			//x
-			//this.transform.position += new Vector3(this.player.cx, 0, 0); //軽い
-			//this.transform.Translate(this.player.cx, 0, 0);               //若干重い
-			//y 
-			//this.player.rigid2D.velocity = new Vector2(0, this.player.cy);//Yのみ（Xと分けた場合）
-
-			this.player.rigid2D.velocity = new Vector2(this.player.cx, this.player.cy);//両方（多分重い）
+			//キャラ向き変更
+			//移動量を取得
+			if (this.player.cx > 0)
+			{
+				this.player.angle = Chara.Angle.Right;
+			}
+			else if (this.player.cx < 0)
+			{
+				this.player.angle = Chara.Angle.Left;
+			}
+			//右
+			if (this.player.angle == Chara.Angle.Right)
+			{
+				transform.localScale = new Vector3(1, 1, 1);
+			}
+			//左
+			else
+			{
+				transform.localScale = new Vector3(-1, 1, 1);
+			}
+			this.player.rigid2D.velocity = new Vector2(this.player.cx, this.player.cy);
 
 		}
 	}
