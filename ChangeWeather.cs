@@ -16,32 +16,46 @@ public class ChangeWeather : MonoBehaviour
 		Snowy_Hard,     //雪(強)
 	}
 	public WeatherState WS;
-
+    private GameObject player;
+    private bool clearFlag;
 	// Start is called before the first frame update
 	void Start()
 	{
 		//初期天候を曇りに
 		this.WS = WeatherState.Cloudy;
+        this.player = GameObject.FindWithTag("Player");
+        this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+        if(this.clearFlag==true)
+        {
+            return;
+        }
+
 		WeatherState pre = this.WS;
 
-		if (Input.GetButton("Fire1")) 
-		{
-			//天候変化（ベースの天気）
-			Weather_ChangeBase();
-		}
+        this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
 
-		//天候変化（強さ）
-		Weather_ChangeStrength();
+        //未クリア時のみ変更可能
+        if (this.clearFlag == false)
+        {
+            if (Input.GetButton("Fire1"))
+            {
+                //天候変化（ベースの天気）
+                Weather_ChangeBase();
+            }
 
-		if (pre != this.WS)
-		{   //天候表示
-			Debug.Log(this.WS);
-		}
+            //天候変化（強さ）
+            Weather_ChangeStrength();
+
+            if (pre != this.WS)
+            {   //天候表示
+                Debug.Log(this.WS);
+            }
+        }
 	}
 
 

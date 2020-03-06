@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 		public float cy;            //プレイヤY
 		public float walkSpeed;     //歩行速度
 		public float jumpForce;     //ジャンプ力
-
+        public bool ClearFlag;      //クリアフラグ
 		public enum Angle           //キャラ向き
 		{
 			Right,
@@ -22,13 +22,14 @@ public class PlayerController : MonoBehaviour
 
 		public Rigidbody2D rigid2D; //プレイヤの物理
 
-		public Chara(float x, float y, float s, float jF, Angle a, Rigidbody2D rigidbody2D)
+		public Chara(float x, float y, float s, float jF,bool c, Angle a, Rigidbody2D rigidbody2D)
 		{
 			cx = x;
 			cy = y;
 			walkSpeed = s;
 			jumpForce = jF;
 			angle = a;
+            ClearFlag = c;
 			this.rigid2D = rigidbody2D;
 		}
 	}
@@ -38,20 +39,36 @@ public class PlayerController : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		//X,Y,歩行速度,ジャンプ力,キャラ向き,Rigidbody2Dを取得
-		this.player = new Chara(0, 0, 5.0f, 550.0f, Chara.Angle.Right, GetComponent<Rigidbody2D>());
+        //X,Y,歩行速度,ジャンプ力,クリアフラグ,キャラ向き,Rigidbody2Dを取得
+        this.player = 
+            new Chara(0, 0, 5.0f, 550.0f, false, Chara.Angle.Right, GetComponent<Rigidbody2D>());
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		Player_Move();
-
+        if(this.player.ClearFlag==true)
+        {
+            return;
+        }
+        else
+        {
+            Player_Move();
+        }
 	}
 
-	//-------------------------------------------------------------------------------------
-	//プレイヤの動き
-	void Player_Move()
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Goal")
+        {
+            this.player.ClearFlag = true;
+            Debug.Log(this.player.ClearFlag);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------
+    //プレイヤの動き
+    void Player_Move()
 	{
 
 		if (Input.GetButton("Fire1") == false)
