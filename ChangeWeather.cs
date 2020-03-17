@@ -16,8 +16,14 @@ public class ChangeWeather : MonoBehaviour
 		Snowy_Hard,     //雪(強)
 	}
 	public WeatherState WS;
+
     private GameObject player;
     private bool clearFlag;
+
+    public bool Start_CoolTime;
+    public float coolTime;
+    private float nowTime;
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -25,12 +31,14 @@ public class ChangeWeather : MonoBehaviour
 		this.WS = WeatherState.Cloudy;
         this.player = GameObject.FindWithTag("Player");
         this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
+        this.Start_CoolTime = false;
+        this.nowTime = 0;
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-        if(this.clearFlag==true)
+        if (this.clearFlag == true) 
         {
             return;
         }
@@ -38,9 +46,9 @@ public class ChangeWeather : MonoBehaviour
 		WeatherState pre = this.WS;
 
         this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
-
-        //未クリア時のみ変更可能
-        if (this.clearFlag == false)
+        CoolTime();
+        //未クリア時かつ非クールタイム時のみ変更可能
+        if (this.clearFlag == false && Start_CoolTime == false) 
         {
             if (Input.GetButton("Fire1"))
             {
@@ -52,14 +60,27 @@ public class ChangeWeather : MonoBehaviour
             Weather_ChangeStrength();
 
             if (pre != this.WS)
-            {   //天候表示
+            {
+                this.Start_CoolTime = true;
+                //天候表示
                 Debug.Log(this.WS);
             }
         }
 	}
 
+    private void CoolTime()
+    {
+        if (this.Start_CoolTime /*== true*/) 
+        {
+            this.nowTime += Time.deltaTime;
 
-
+            if(this.nowTime >= this.coolTime)
+            {
+                nowTime = 0;
+                Start_CoolTime = false;
+            }
+        }
+    }
 
 	//天気の変更
 	void Weather_ChangeBase()

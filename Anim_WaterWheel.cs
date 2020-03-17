@@ -11,9 +11,9 @@ public class Anim_WaterWheel : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		director = GameObject.Find("Director");
-		ws = director.gameObject.GetComponent<ChangeWeather>().WS;
-		animator = this.gameObject.GetComponent<Animator>();
+		this.director = GameObject.FindWithTag("FieldDirector");
+        this.ws = this.director.gameObject.GetComponent<ChangeWeather>().WS;
+        this.animator = this.gameObject.GetComponent<Animator>();
 	}
 
 	// Update is called once per frame
@@ -21,10 +21,10 @@ public class Anim_WaterWheel : MonoBehaviour
 	{
 		ChangeWeather.WeatherState WS_pre = this.ws;
 
-		ws = director.gameObject.GetComponent<ChangeWeather>().WS;
+        this.ws = this.director.gameObject.GetComponent<ChangeWeather>().WS;
 		if (WS_pre != this.ws)
 		{
-			if (ws == ChangeWeather.WeatherState.Rainy_Hard)
+			if (this.ws == ChangeWeather.WeatherState.Rainy_Hard)
 			{
 				AnimFlag_WaterWheel = true;
 				Invoke("Move_WaterWheel", 1.5f);

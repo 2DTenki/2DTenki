@@ -18,10 +18,10 @@ public class ChangeMap : MonoBehaviour
     void Start()
     {
         // このobjectのSpriteRendererを取得
-        MainSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		//MainSpriteRenderer.sprite = CloudySprite;
-		director = GameObject.Find("Director");
-		this.WS = director.GetComponent<ChangeWeather>().WS;		
+        this.MainSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        //MainSpriteRenderer.sprite = CloudySprite;
+        this.director = GameObject.FindWithTag("FieldDirector");
+        this.WS = director.GetComponent<ChangeWeather>().WS;		
     }
 
      void Update()
@@ -42,15 +42,15 @@ public class ChangeMap : MonoBehaviour
 			switch (this.WS)
 			{
 				case ChangeWeather.WeatherState.Rainy:
-					Invoke("rain", 1.5f);
+					Invoke("rain", 3.0f);
 					break;
 
 				case ChangeWeather.WeatherState.Snowy:
-					Invoke("snow", 3.7f);
+					Invoke("snow", 3.0f);
 					break;
 
 				case ChangeWeather.WeatherState.Sunny:
-					Invoke("sunny", 0.7f);
+					Invoke("sunny", 3.0f);
 					break;
 
 				case ChangeWeather.WeatherState.Cloudy:
@@ -58,19 +58,6 @@ public class ChangeMap : MonoBehaviour
 					break;
 			}
 		}
-        //if (Input.GetKeyDown(KeyCode.F))
-        //{
-
-        //    Invoke("snow", 3.7f);
-        //}
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    Invoke("rain", 1.5f);
-        //}
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    MainSpriteRenderer.sprite = StandbySprite;
-        //}
     }
     void rain()
     {
@@ -84,17 +71,4 @@ public class ChangeMap : MonoBehaviour
     {
         MainSpriteRenderer.sprite = SunnySprite;
     }
-    //private void OnParticleCollision2D(Collision2D collision)
-    //{
-    //    if(collision.gameObject.tag=="snow")
-    //    {
-    //        MainSpriteRenderer.sprite = SnowSprite;
-    //    }
-    //    if(collision.gameObject.tag=="rain")
-    //    {
-    //        MainSpriteRenderer.sprite = RainSprite;
-    //    }
-    //}
-
-
 }

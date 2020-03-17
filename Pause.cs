@@ -15,8 +15,8 @@ public class Pause : MonoBehaviour
     private GameObject clearUIInstance;
 
     private GameObject player;
-    private bool clearFlag
-        ;
+    private bool clearFlag;
+        
     // Start is called before the first frame update
     void Start()
     {
@@ -46,12 +46,12 @@ public class Pause : MonoBehaviour
         {
             if (pauseUIInstance == null)
             {
-                this.pauseUIInstance = GameObject.Instantiate(pauseUIPrefab) as GameObject;
+                this.pauseUIInstance = GameObject.Instantiate(this.pauseUIPrefab) as GameObject;
                 Time.timeScale = 0f;
             }
             else
             {
-                Destroy(pauseUIInstance);
+                Destroy(this.pauseUIInstance);
                 Time.timeScale = 1f;
             }
         }
@@ -61,9 +61,9 @@ public class Pause : MonoBehaviour
     {
         if (this.clearFlag == true)
         {
-            if (clearUIInstance == null)
+            if (this.clearUIInstance == null)
             {
-                this.clearUIInstance = GameObject.Instantiate(clearUIPrefab) as GameObject;
+                this.clearUIInstance = GameObject.Instantiate(this.clearUIPrefab) as GameObject;
                 return;
             }
         }
