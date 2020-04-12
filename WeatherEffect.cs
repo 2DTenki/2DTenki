@@ -42,7 +42,6 @@ public class WeatherEffect : MonoBehaviour
 
 	private void Particle()
 	{
-
 		ChangeWeather.WeatherState preWS = this.ws;
 		this.ws = this.director.GetComponent<ChangeWeather>().WS;
 
@@ -50,7 +49,6 @@ public class WeatherEffect : MonoBehaviour
 		{
 			switch (this.ws)
 			{
-
 				case ChangeWeather.WeatherState.Rainy:
 					//雨パーティクル始動
 					this.rainParticle.GetComponent<ParticleSystem>().Play();
@@ -103,9 +101,5 @@ public class WeatherEffect : MonoBehaviour
 					break;
 			}
 		}
-	}
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-
 	}
 }

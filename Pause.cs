@@ -14,14 +14,14 @@ public class Pause : MonoBehaviour
     private GameObject pauseUIInstance;
     private GameObject clearUIInstance;
 
-    private GameObject player;
+    GameManagement gameManegement;
     private bool clearFlag;
         
     // Start is called before the first frame update
     void Start()
     {
-        this.player = GameObject.FindWithTag("Player");
-        this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
+        this.gameManegement= GameObject.FindWithTag("GameManager").GetComponent<GameManagement>();
+        this.clearFlag = this.gameManegement.ClearFlag;
     }
 
 
@@ -34,7 +34,7 @@ public class Pause : MonoBehaviour
         }
         else
         {
-            this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
+            this.clearFlag = this.gameManegement.ClearFlag;
             Clear_();
         }
         Pause_();

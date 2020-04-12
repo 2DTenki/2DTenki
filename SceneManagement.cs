@@ -59,9 +59,12 @@ public class SceneManagement : MonoBehaviour
         {
             GetComponent<GameManagement>().nowStageNum = 1;
             //StartCoroutine(WaitForScene("TitleScene"));
-            GameObject obj = GameObject.FindWithTag("Goal");
-            Goal goal = obj.GetComponent<Goal>();
             SceneLoad("TitleScene");
+        }
+
+        if (GetComponent<GameManagement>().GameOverFlag == true)
+        {
+            SceneLoad("EndingScene");
         }
     }
 
@@ -102,6 +105,7 @@ public class SceneManagement : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(sceneName);
     }
 
+    //即時
     void SceneLoad(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

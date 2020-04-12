@@ -4,51 +4,63 @@ using UnityEngine;
 
 public class ChangeWeather : MonoBehaviour
 {
-	//天候
-	public enum WeatherState
-	{
-		Cloudy,         //曇り（ベース）
-		Rainy,          //雨
-		Rainy_Hard,     //雨（強）
-		Sunny,          //晴れ
-		Sunny_Hard,     //晴れ（強）
-		Snowy,          //雪
-		Snowy_Hard,     //雪(強)
-	}
-	public WeatherState WS;
+    //天候
+    public enum WeatherState
+    {
+        Cloudy,         //曇り（ベース）
+        Rainy,          //雨
+        Rainy_Hard,     //雨（強）
+        Sunny,          //晴れ
+        Sunny_Hard,     //晴れ（強）
+        Snowy,          //雪
+        Snowy_Hard,     //雪(強)
+    }
+    public WeatherState WS;
 
+    private GameManagement gameManegement;
     private GameObject player;
     private bool clearFlag;
+    private bool GameOverFlag;
+
+    //天候変化回数設定用
+    private PlayerController playerController;
 
     public bool Start_CoolTime;
     public float coolTime;
     private float nowTime;
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		//初期天候を曇りに
-		this.WS = WeatherState.Cloudy;
+    // Start is called before the first frame update
+    void Start()
+    {
+        //初期天候を曇りに
+        this.WS = WeatherState.Cloudy;
+
         this.player = GameObject.FindWithTag("Player");
-        this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
+        this.playerController = player.GetComponent<PlayerController>();
+        this.gameManegement= GameObject.FindWithTag("GameManager").GetComponent<GameManagement>();
+
         this.Start_CoolTime = false;
         this.nowTime = 0;
-	}
+    }
 
-	// Update is called once per frame
-	void Update()
-	{
-        if (this.clearFlag == true) 
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        //未クリア・ゲームオーバー時のみ変更可能
+        if (this.gameManegement.ClearFlag == true ||
+            this.gameManegement.GameOverFlag == true)
         {
             return;
         }
 
-		WeatherState pre = this.WS;
+        WeatherState pre = this.WS;
 
-        this.clearFlag = this.player.GetComponent<PlayerController>().player.ClearFlag;
         CoolTime();
-        //未クリア時かつ非クールタイム時のみ変更可能
-        if (this.clearFlag == false && Start_CoolTime == false) 
+
+        //非クールタイム時のみ変更可能
+        if (Start_CoolTime == false)
         {
             if (Input.GetButton("Fire1"))
             {
@@ -61,20 +73,27 @@ public class ChangeWeather : MonoBehaviour
 
             if (pre != this.WS)
             {
+                //変更可能な回数を1回減らす
+                this.playerController.player.changeCnt -= 1;
+                if (this.playerController.player.changeCnt == 0)
+                {
+                    this.gameManegement.GameOverFlag = true;
+                }
                 this.Start_CoolTime = true;
                 //天候表示
                 Debug.Log(this.WS);
+                Debug.Log(this.playerController.player.changeCnt);
             }
         }
-	}
+    }
 
     private void CoolTime()
     {
-        if (this.Start_CoolTime /*== true*/) 
+        if (this.Start_CoolTime /*== true*/)
         {
             this.nowTime += Time.deltaTime;
 
-            if(this.nowTime >= this.coolTime)
+            if (this.nowTime >= this.coolTime)
             {
                 nowTime = 0;
                 Start_CoolTime = false;
@@ -82,66 +101,65 @@ public class ChangeWeather : MonoBehaviour
         }
     }
 
-	//天気の変更
-	void Weather_ChangeBase()
-	{
+    //天気の変更
+    void Weather_ChangeBase()
+    {
 
-		float weatherX = Input.GetAxis("Horizontal");
-		float weatherY = Input.GetAxis("Vertical");
+        float weatherX = Input.GetAxis("Horizontal");
+        float weatherY = Input.GetAxis("Vertical");
 
-		if (weatherX > 0.1f)
-		{
-			this.WS = WeatherState.Rainy;
-		}
+        if (weatherX > 0.1f)
+        {
+            this.WS = WeatherState.Rainy;
+        }
 
-		if (weatherX < -0.1f)
-		{
-			this.WS = WeatherState.Sunny;
-		}
+        if (weatherX < -0.1f)
+        {
+            this.WS = WeatherState.Sunny;
+        }
 
-		if (weatherY > 0.1f)
-		{
-			this.WS = WeatherState.Snowy;
-		}
+        if (weatherY > 0.1f)
+        {
+            this.WS = WeatherState.Snowy;
+        }
 
-		if (weatherY < -0.1f)
-		{
-			this.WS = WeatherState.Cloudy;
-		}
-	}
+        if (weatherY < -0.1f)
+        {
+            this.WS = WeatherState.Cloudy;
+        }
+    }
 
+    //天気の強弱の変更
+    void Weather_ChangeStrength()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            switch (this.WS)
+            {
+                case WeatherState.Sunny:
+                    this.WS = WeatherState.Sunny_Hard;
+                    break;
 
-	//天気の強弱の変更
-	void Weather_ChangeStrength()
-	{
-		if (Input.GetKeyDown(KeyCode.X))
-		{
-			switch (this.WS)
-			{
-				case WeatherState.Sunny:
-					this.WS = WeatherState.Sunny_Hard;
-					break;
+                case WeatherState.Sunny_Hard:
+                    this.WS = WeatherState.Sunny;
+                    break;
 
-				case WeatherState.Sunny_Hard:
-					this.WS = WeatherState.Sunny;
-					break;
+                case WeatherState.Rainy:
+                    this.WS = WeatherState.Rainy_Hard;
+                    break;
 
-				case WeatherState.Rainy:
-					this.WS = WeatherState.Rainy_Hard;
-					break;
+                case WeatherState.Rainy_Hard:
+                    this.WS = WeatherState.Rainy;
+                    break;
 
-				case WeatherState.Rainy_Hard:
-					this.WS = WeatherState.Rainy;
-					break;
+                case WeatherState.Snowy:
+                    this.WS = WeatherState.Snowy_Hard;
+                    break;
 
-				case WeatherState.Snowy:
-					this.WS = WeatherState.Snowy_Hard;
-					break;
-
-				case WeatherState.Snowy_Hard:
-					this.WS = WeatherState.Snowy;
-					break;
-			}
-		}
-	}
+                case WeatherState.Snowy_Hard:
+                    this.WS = WeatherState.Snowy;
+                    break;
+            }
+        }
+    }
 }

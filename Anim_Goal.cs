@@ -13,10 +13,7 @@ public class Anim_Goal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //	this.animator.SetTrigger("Goal_Trigger");
-        //}
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

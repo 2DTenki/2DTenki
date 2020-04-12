@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door2 : MonoBehaviour
+public class KeepInRain : MonoBehaviour
 {
     public Animator animator;
     private GameObject waterWheel;
@@ -38,7 +38,7 @@ public class Door2 : MonoBehaviour
             //ドア閉める
             else
             {
-                Invoke("Move_DoorClose", 1.0f);
+                Invoke("Stop_Rope", 1.0f);
             }
         }
         //変更前と後で状態が変わっていた場合のみ行う
@@ -47,12 +47,12 @@ public class Door2 : MonoBehaviour
             //凍らせる
             if (this.AnimFlag_DoorFreeze == true)
             {
-                Invoke("Freeze_Door", 0.5f);
-            } 
+                Invoke("Freeze_Base", 0.5f);
+            }
             //解凍する
             else
             {
-                Invoke("Freeze_Door", 0.5f);
+                Invoke("Freeze_Base", 0.5f);
             }
         }
     }
@@ -73,6 +73,7 @@ public class Door2 : MonoBehaviour
     {
         GetComponent<Collider2D>().offset = new Vector2(0, 1);
     }
+
 
     private void Freeze_Door()
     {

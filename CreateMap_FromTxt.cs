@@ -7,9 +7,14 @@ using System.Text;
 
 public class CreateMap_FromTxt : MonoBehaviour
 {
+    //天候変化回数設定用
+    private PlayerController playerController;
+    private GameObject player;
+    public int ChangeCnt;
+
     public GameObject mapChip;
 
-    float MapChipSize = 0.64f;   //画像ピクセル 32 ÷ PixelsPerUnit 32 = 2 ユニット移動速度
+    float MapChipSize = 0.64f;
     private int MapSize_X = 30;
     private int MapSize_Y = 17;
     private int stageNum;
@@ -19,7 +24,7 @@ public class CreateMap_FromTxt : MonoBehaviour
     private void LoadMap_FromTextFile(string filename)
     {
         string txtMapData = "";
-        FileInfo fi = new FileInfo(Application.dataPath + "/MapData/" + filename);
+        FileInfo fi = new FileInfo(Application.dataPath + "/StreamingAssets/" + "/MapData/" + filename);
 
         try
         {
@@ -104,5 +109,35 @@ public class CreateMap_FromTxt : MonoBehaviour
         LoadMap_FromTextFile("Map" + num + ".txt");	//テキストファイルからマップをロードする
 
         SetWalls();
+
+        SetChangeCnt();
     }
+
+    private void SetChangeCnt()
+    {
+        player = GameObject.FindWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
+
+        switch (this.stageNum)
+        {
+            //1種類の天候でクリアできるステージ
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                //this.ChangeCnt = 10;
+                playerController.player.changeCnt = 6;
+                break;
+
+            //複数の天候が必要なステージ
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                //this.ChangeCnt = 20;
+                playerController.player.changeCnt = 30;
+                break;
+        }    }
 }

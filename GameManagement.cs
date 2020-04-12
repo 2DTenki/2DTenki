@@ -24,10 +24,12 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 }
 public class GameManagement : SingletonMonoBehaviour<GameManagement>
 {
-    //[System.NonSerialized]
     public int nowStageNum = 1;  //現在のステージ番号（1から）
-
     public int maxStageNum = 10; //総ステージ数
+
+    public bool ClearFlag = false;       //クリアフラグ(Goal.csで変更)
+    public bool GameOverFlag = false;    //ゲームオーバーフラグ(ChangeWeather.csで変更)
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,9 +40,7 @@ public class GameManagement : SingletonMonoBehaviour<GameManagement>
     // Update is called once per frame
     void Update()
     {
-
     }
-
 
     public void Awake()
     {
@@ -56,11 +56,17 @@ public class GameManagement : SingletonMonoBehaviour<GameManagement>
     public void NextStage()
     {
         nowStageNum += 1;
+
         if (nowStageNum <= maxStageNum)
         {
+            //ステージが続くときはフラグをリセットしておく
+            this.ClearFlag = false;
+            this.GameOverFlag = false;
+
             //コルーチンを実行
             StartCoroutine(WaitForLoadScene());
         }
+        //ゲームクリアでエンディングへ
         else
         {
             //コルーチンを実行

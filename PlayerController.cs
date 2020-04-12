@@ -11,8 +11,8 @@ public class PlayerController : MonoBehaviour
         public float cy;            //プレイヤY
         public float walkSpeed;     //歩行速度
         public float jumpForce;     //ジャンプ力
-        public bool ClearFlag;      //クリアフラグ(Goal.csで変更)
-        public enum Angle           //キャラ向き
+        public int changeCnt;      //天候変化できる回数(ChangeWeather.csで操作)
+        public enum Angle          //キャラ向き
         {
             Right,
             Left,
@@ -22,32 +22,45 @@ public class PlayerController : MonoBehaviour
 
         public Rigidbody2D rigid2D; //プレイヤの物理
 
-        public Chara(float x, float y, float s, float jF, bool c, Angle a, Rigidbody2D rigidbody2D)
+        public Chara(float x, float y, float ws, float jF, int cc, Angle a, Rigidbody2D rigidbody2D)
         {
             this.cx = x;
             this.cy = y;
-            this.walkSpeed = s;
+            this.walkSpeed = ws;
             this.jumpForce = jF;
+            this.changeCnt = cc;
             this.angle = a;
-            this.ClearFlag = c;
             this.rigid2D = rigidbody2D;
         }
     }
 
     public Chara player;
+    private GameManagement gameManegement;
 
     // Start is called before the first frame update
     void Start()
     {
-        //X,Y,歩行速度,ジャンプ力,クリアフラグ,キャラ向き,Rigidbody2Dを取得
         this.player =
-            new Chara(0, 0, 5.0f, 550.0f, false, Chara.Angle.Right, GetComponent<Rigidbody2D>());
+            new Chara(
+            0,                          //X
+            0,                          //Y
+            5.0f,                       //歩行速度
+            550.0f,                     //ジャンプ力
+            100,                         //天候変化できる回数(ステージ1の回数[2以降はCreatMap_FromTxtで設定])
+            Chara.Angle.Right,          //キャラ向き
+            GetComponent<Rigidbody2D>() //Rigidbody2Dを取得
+                    );
+
+        this.gameManegement = GameObject.FindWithTag("GameManager").GetComponent<GameManagement>();
+        this.gameManegement.ClearFlag = false;
+        this.gameManegement.GameOverFlag = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (this.player.ClearFlag == false)
+        if (this.gameManegement.ClearFlag == false && this.gameManegement.GameOverFlag == false)
         {
             Player_Move();
         }

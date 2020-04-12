@@ -5,29 +5,36 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    GameManagement gameManegement;
-    GameObject player;
-    PlayerController playerController;
+    private GameManagement gameManegement;
+    private GameObject player;
+    private bool ClearFlag, GameOverFlag;
+    private float timeCnt;
+
     // Start is called before the first frame update
     void Start()
     {
-        gameManegement= GameObject.FindWithTag("GameManager").GetComponent<GameManagement>();
+        this.gameManegement = GameObject.FindWithTag("GameManager").GetComponent<GameManagement>();
+        timeCnt = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (gameManegement.ClearFlag == true)
+        {
+            timeCnt += Time.deltaTime;
+            if (Input.anyKeyDown && timeCnt >= 1.0f)
+            {
+                gameManegement.NextStage();
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag=="Player")
+        if (collision.gameObject.tag == "Player")
         {
-            player = GameObject.FindWithTag("Player");
-            playerController = player.GetComponent<PlayerController>();
-            playerController.player.ClearFlag = true;
-            gameManegement.NextStage();
+            gameManegement.ClearFlag = true;
         }
     }
 
